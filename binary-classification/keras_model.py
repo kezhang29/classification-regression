@@ -60,9 +60,19 @@ model.compile(
 def train():
     history = model.fit(x_train,y_train,epochs=4,batch_size = 512,validation_data=(x_val,y_val))
     model.save("models/binary_classification.keras")
-    return history
 
-def plot(history):
+    summary = []
+    model.summary(print_fn=lambda x: summary.append(x)) 
+    summary_text = '\n'.join(summary)
+
+    # Plot as image
+    fig, ax = plt.subplots(figsize=(12, 8))
+    ax.text(0.01, 0.01, summary_text, fontfamily='monospace', fontsize=12)
+    ax.axis('off')
+    plt.tight_layout()
+    plt.savefig('model_summary.png', dpi=300, bbox_inches='tight')
+
+
     history_dict = history.history
     training_loss = history_dict["loss"]
     val_loss = history_dict["val_loss"]
@@ -82,4 +92,6 @@ def plot(history):
     plt.show()
 
 if __name__ == "__main__":
-    plot(train())
+    train()
+
+
